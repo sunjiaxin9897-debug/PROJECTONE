@@ -797,6 +797,133 @@
       font-size: .95rem;
     }
 
+
+    /* Real media mounting styles */
+    .media-preview {
+      margin-top: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .media-card {
+      background: rgba(255,255,255,.78);
+      border: 2px solid rgba(47,158,68,.16);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(34,91,70,.08);
+    }
+
+    .intro-video {
+      width: 100%;
+      max-height: 260px;
+      border-radius: 20px;
+      background: #e8f8ee;
+      display: block;
+      object-fit: cover;
+      border: 3px solid rgba(255,255,255,.8);
+    }
+
+    .audio-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .media-note {
+      font-size: .92rem;
+      line-height: 1.45;
+      opacity: .86;
+      margin: 6px 0 0;
+    }
+
+    .hero-asset-image {
+      width: min(330px, 78vw);
+      max-height: 360px;
+      object-fit: contain;
+      display: none;
+      filter: drop-shadow(0 16px 22px rgba(34,91,70,.18));
+      animation: bob 2.8s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    .hero-asset-image.visible {
+      display: block;
+    }
+
+    .css-mascot.hidden {
+      display: none;
+    }
+
+    .card-art {
+      width: 98px;
+      height: 98px;
+      object-fit: contain;
+      border-radius: 24px;
+      background: var(--sky);
+      padding: 8px;
+      display: none;
+      box-shadow: inset 0 -5px 0 rgba(0,0,0,.06);
+    }
+
+    .card-art.visible {
+      display: block;
+    }
+
+    .card-art.visible + .big-icon,
+    .big-icon.hidden {
+      display: none;
+    }
+
+    .park-scene.has-bg {
+      background-size: cover;
+      background-position: center;
+    }
+
+    .park-scene.has-bg .cloud,
+    .park-scene.has-bg .tree,
+    .park-scene.has-bg .path {
+      opacity: .08;
+    }
+
+    .badge img {
+      width: 82%;
+      height: 82%;
+      object-fit: contain;
+      display: none;
+    }
+
+    .badge img.visible {
+      display: block;
+    }
+
+    .badge span.hidden {
+      display: none;
+    }
+
+    .certificate.has-bg {
+      background-size: cover;
+      background-position: center;
+      background-color: rgba(255,255,255,.72);
+      background-blend-mode: screen;
+      border-style: solid;
+    }
+
+    .asset-warning {
+      display: none;
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #fff7dc;
+      border-radius: 14px;
+      font-weight: 900;
+      color: #6f4f00;
+    }
+
+    .asset-warning.visible {
+      display: block;
+    }
+
     @media (max-width: 980px) {
       header { align-items: flex-start; border-radius: 26px; grid-template-columns: 1fr; }
       nav { justify-content: flex-start; }
@@ -873,24 +1000,49 @@
             <button class="secondary-button" data-target="park">Play First Mission</button>
           </div>
 
-          <div class="media-hooks" aria-label="Reserved media mounting areas">
-            <div class="hook-box" data-hook="intro-video">
-              <strong>Intro Video Placeholder</strong>
-              <span>Replace later with your video.</span>
-              <span class="hook-code">assets/video/intro.mp4</span>
-              <button class="tiny-button copy-path" data-copy="assets/video/intro.mp4">Copy path</button>
+          <div class="media-preview" aria-label="Mounted media preview">
+            <div class="media-card">
+              <strong>🎬 Intro Video</strong>
+              <video id="introVideo" class="intro-video" controls playsinline preload="metadata">
+                <source src="assets/video/intro.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <p class="media-note">Mounted path: <span class="hook-code">assets/video/intro.mp4</span></p>
+              <div class="asset-warning" id="introVideoWarning">If the video does not appear on GitHub/Gitee Pages, check the file name and letter case: intro.mp4.</div>
             </div>
-            <div class="hook-box" data-hook="bgm-audio">
-              <strong>BGM Placeholder</strong>
-              <span>Replace later with background music.</span>
-              <span class="hook-code">assets/audio/bgm.mp3</span>
-              <button class="tiny-button copy-path" data-copy="assets/audio/bgm.mp3">Copy path</button>
+
+            <div class="media-card">
+              <strong>🎵 Background Music</strong>
+              <div class="audio-controls">
+                <button class="secondary-button" id="musicToggle" type="button">Play BGM</button>
+                <button class="tiny-button copy-path" data-copy="assets/audio/bgm/eco-hero-main-bgm.mp3" type="button">Copy BGM path</button>
+              </div>
+              <audio id="bgmAudio" loop preload="auto">
+                <source src="assets/audio/bgm/eco-hero-main-bgm.mp3" type="audio/mpeg" />
+              </audio>
+              <p class="media-note">Mounted path: <span class="hook-code">assets/audio/bgm/eco-hero-main-bgm.mp3</span></p>
+              <div class="asset-warning" id="bgmWarning">Browsers do not allow music autoplay. Click “Play BGM” after opening the page.</div>
             </div>
-            <div class="hook-box" data-hook="image-folder">
-              <strong>Image Folder</strong>
-              <span>Put your graphics here.</span>
-              <span class="hook-code">assets/images/</span>
-              <button class="tiny-button copy-path" data-copy="assets/images/">Copy path</button>
+
+            <div class="media-hooks" aria-label="Asset path quick copy">
+              <div class="hook-box" data-hook="image-folder">
+                <strong>Image Folder</strong>
+                <span>All generated PNG images should stay here.</span>
+                <span class="hook-code">assets/images/</span>
+                <button class="tiny-button copy-path" data-copy="assets/images/">Copy path</button>
+              </div>
+              <div class="hook-box" data-hook="sfx-folder">
+                <strong>Sound Effects Folder</strong>
+                <span>Button, success, wrong answer, and star sounds.</span>
+                <span class="hook-code">assets/audio/sfx/</span>
+                <button class="tiny-button copy-path" data-copy="assets/audio/sfx/">Copy path</button>
+              </div>
+              <div class="hook-box" data-hook="tutorial-video">
+                <strong>How-to-play Video</strong>
+                <span>Optional tutorial video for children.</span>
+                <span class="hook-code">assets/video/how-to-play.mp4</span>
+                <button class="tiny-button copy-path" data-copy="assets/video/how-to-play.mp4">Copy path</button>
+              </div>
             </div>
           </div>
         </article>
@@ -898,7 +1050,8 @@
         <aside class="card mascot-stage" aria-label="Eco Hero mascot illustration made with CSS and emoji">
           <div class="mascot-wrap">
             <div class="speech" id="mascotSpeech" aria-live="polite">Hi! Tap me for a green tip. Then complete the missions to collect stars!</div>
-            <div class="mascot" id="mascot" role="button" tabindex="0" aria-label="Eco Hero mascot. Press for a green tip.">
+            <img id="mascotImage" class="hero-asset-image" src="assets/images/eco-hero.png" alt="Eco Hero mascot" />
+            <div class="mascot css-mascot" id="mascot" role="button" tabindex="0" aria-label="Eco Hero mascot. Press for a green tip.">
               <div class="cape"></div>
               <div class="body">♻️</div>
             </div>
@@ -917,6 +1070,7 @@
           <button class="flip-card" aria-label="Flip Reduce card">
             <div class="flip-inner">
               <div class="flip-face">
+                <img class="card-art" data-asset-img src="assets/images/reduce-card.png" alt="Reduce example illustration" />
                 <span class="big-icon" aria-hidden="true">🔁</span>
                 <h3>Reduce</h3>
                 <p>Use less. Choose only what you need.</p>
@@ -932,6 +1086,7 @@
           <button class="flip-card" aria-label="Flip Reuse card">
             <div class="flip-inner">
               <div class="flip-face">
+                <img class="card-art" data-asset-img src="assets/images/reuse-card.png" alt="Reuse example illustration" />
                 <span class="big-icon" aria-hidden="true">👜</span>
                 <h3>Reuse</h3>
                 <p>Use something again before throwing it away.</p>
@@ -947,6 +1102,7 @@
           <button class="flip-card" aria-label="Flip Recycle card">
             <div class="flip-inner">
               <div class="flip-face">
+                <img class="card-art" data-asset-img src="assets/images/recycle-card.png" alt="Recycle example illustration" />
                 <span class="big-icon" aria-hidden="true">♻️</span>
                 <h3>Recycle</h3>
                 <p>Put materials in the correct bins so they can become useful again.</p>
@@ -1070,7 +1226,10 @@
 
     <section id="reward" class="screen" aria-labelledby="reward-title">
       <article class="card reward-box">
-        <div class="badge" aria-label="Eco hero badge" id="rewardBadge">🏅</div>
+        <div class="badge" aria-label="Eco hero badge" id="rewardBadge">
+          <img id="rewardBadgeImg" src="assets/images/reward-badge.png" alt="Eco Hero reward badge" />
+          <span id="rewardBadgeEmoji">🏅</span>
+        </div>
         <div>
           <span class="eyebrow">🎉 Reward Screen</span>
           <h2 id="reward-title">Great Job, Eco Hero!</h2>
@@ -1092,7 +1251,7 @@
           <details class="teacher-panel">
             <summary>Teacher / Project Notes</summary>
             <p><strong>Text and graphics:</strong> child-friendly cards, large icons, simple vocabulary, colorful layout, and CSS-made scenes.</p>
-            <p><strong>Audio and video:</strong> reserved placeholders are prepared for intro narration video and BGM. No external media is required for the current version.</p>
+            <p><strong>Audio and video:</strong> intro video, optional how-to-play video, BGM, reward music, and sound effects are connected through relative asset paths. The page still works even if a media file is missing.</p>
             <p><strong>Animation:</strong> CSS floating leaves, mascot movement, card flipping, clouds, item pulse, progress bar, and badge pop animation.</p>
             <p><strong>Interaction:</strong> name input, badge selection, mascot tips, flip cards, promise selection, park clean-up game, drag/click sorting game, quiz, score, stars, feedback, and reward certificate.</p>
             <p><strong>Gitee deployment:</strong> upload this file and the assets folder to the repository root. Keep all media paths relative.</p>
@@ -1118,9 +1277,23 @@
     */
     const MEDIA_HOOKS = {
       introVideo: "assets/video/intro.mp4",
-      backgroundMusic: "assets/audio/bgm.mp3",
+      howToPlayVideo: "assets/video/how-to-play.mp4",
+      backgroundMusic: "assets/audio/bgm/eco-hero-main-bgm.mp3",
+      rewardSting: "assets/audio/bgm/reward-sting.mp3",
       heroImage: "assets/images/eco-hero.png",
-      rewardImage: "assets/images/reward-badge.png"
+      parkScene: "assets/images/park-scene.png",
+      reduceCard: "assets/images/reduce-card.png",
+      reuseCard: "assets/images/reuse-card.png",
+      recycleCard: "assets/images/recycle-card.png",
+      rewardImage: "assets/images/reward-badge.png",
+      certificateBg: "assets/images/certificate-bg.png",
+      sfx: {
+        click: "assets/audio/sfx/click.wav",
+        success: "assets/audio/sfx/success.wav",
+        wrong: "assets/audio/sfx/wrong.wav",
+        star: "assets/audio/sfx/star_collect.wav",
+        page: "assets/audio/sfx/page_pop.wav"
+      }
     };
 
     const state = {
@@ -1141,6 +1314,112 @@
     const namePill = document.getElementById("namePill");
     const toast = document.getElementById("toast");
     const progressMap = { home: 10, learn: 30, park: 48, sort: 68, quiz: 88, reward: 100 };
+
+    const soundCache = {};
+    Object.entries(MEDIA_HOOKS.sfx).forEach(([key, src]) => {
+      const audio = new Audio(src);
+      audio.preload = "auto";
+      soundCache[key] = audio;
+    });
+
+    function playSound(key) {
+      const original = soundCache[key];
+      if (!original) return;
+      try {
+        const sound = original.cloneNode();
+        sound.volume = 0.45;
+        sound.play().catch(() => {});
+      } catch (error) {
+        // Missing audio files should not break the learning website.
+      }
+    }
+
+    function testImage(src, onLoad) {
+      const img = new Image();
+      img.onload = () => onLoad(src);
+      img.onerror = () => {};
+      img.src = src;
+    }
+
+    function initMountedAssets() {
+      const mascotImage = document.getElementById("mascotImage");
+      const cssMascot = document.getElementById("mascot");
+      if (mascotImage) {
+        mascotImage.onload = () => {
+          mascotImage.classList.add("visible");
+          if (cssMascot) cssMascot.classList.add("hidden");
+        };
+        mascotImage.onerror = () => {
+          mascotImage.classList.remove("visible");
+          if (cssMascot) cssMascot.classList.remove("hidden");
+        };
+      }
+
+      document.querySelectorAll("[data-asset-img]").forEach((img) => {
+        img.onload = () => {
+          img.classList.add("visible");
+          const icon = img.nextElementSibling;
+          if (icon) icon.classList.add("hidden");
+        };
+        img.onerror = () => img.classList.remove("visible");
+      });
+
+      testImage(MEDIA_HOOKS.parkScene, (src) => {
+        const park = document.getElementById("parkScene");
+        if (!park) return;
+        park.classList.add("has-bg");
+        park.style.backgroundImage = `linear-gradient(rgba(255,255,255,.18), rgba(255,255,255,.18)), url("${src}")`;
+      });
+
+      testImage(MEDIA_HOOKS.certificateBg, (src) => {
+        const certificate = document.querySelector(".certificate");
+        if (!certificate) return;
+        certificate.classList.add("has-bg");
+        certificate.style.backgroundImage = `url("${src}")`;
+      });
+
+      const rewardImg = document.getElementById("rewardBadgeImg");
+      const rewardEmoji = document.getElementById("rewardBadgeEmoji");
+      if (rewardImg) {
+        rewardImg.onload = () => {
+          rewardImg.classList.add("visible");
+          if (rewardEmoji) rewardEmoji.classList.add("hidden");
+        };
+        rewardImg.onerror = () => rewardImg.classList.remove("visible");
+      }
+
+      const introVideo = document.getElementById("introVideo");
+      if (introVideo) {
+        introVideo.addEventListener("error", () => {
+          const warning = document.getElementById("introVideoWarning");
+          if (warning) warning.classList.add("visible");
+        });
+      }
+
+      const bgmAudio = document.getElementById("bgmAudio");
+      const musicToggle = document.getElementById("musicToggle");
+      if (musicToggle && bgmAudio) {
+        musicToggle.addEventListener("click", async () => {
+          try {
+            if (bgmAudio.paused) {
+              await bgmAudio.play();
+              musicToggle.textContent = "Pause BGM";
+              const warning = document.getElementById("bgmWarning");
+              if (warning) warning.classList.add("visible");
+            } else {
+              bgmAudio.pause();
+              musicToggle.textContent = "Play BGM";
+            }
+          } catch (error) {
+            showToast("BGM file not found. Check assets/audio/bgm/eco-hero-main-bgm.mp3");
+          }
+        });
+      }
+
+      const mascotAsset = document.getElementById("mascotImage");
+      if (mascotAsset) mascotAsset.addEventListener("click", showRandomTip);
+    }
+
 
     function saveState() {
       localStorage.setItem("ecoHeroName", state.heroName);
@@ -1165,16 +1444,29 @@
     function addStars(amount, reason) {
       state.stars += amount;
       updateStatus();
+      playSound("star");
       showToast(`+${amount} ⭐ ${reason}`);
     }
 
     function showScreen(targetId) {
+      playSound("page");
       screens.forEach(screen => screen.classList.toggle("active", screen.id === targetId));
       navButtons.forEach(button => button.classList.toggle("active", button.dataset.target === targetId));
       progressBar.style.width = `${progressMap[targetId] || 0}%`;
-      if (targetId === "reward") updateReward();
+      if (targetId === "reward") {
+        updateReward();
+        try {
+          const rewardSound = new Audio(MEDIA_HOOKS.rewardSting);
+          rewardSound.volume = 0.55;
+          rewardSound.play().catch(() => {});
+        } catch (error) {}
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
+
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("button")) playSound("click");
+    });
 
     allTargetButtons.forEach(button => {
       button.addEventListener("click", () => showScreen(button.dataset.target));
@@ -1407,6 +1699,7 @@
 
       if (selectedWaste.type === binType) {
         sortedCount += 1;
+        playSound("success");
         state.sortedItems.add(selectedWaste.id);
         selectedButton.classList.add("done");
         selectedButton.classList.remove("selected");
@@ -1418,6 +1711,7 @@
           burstConfetti(20);
         }
       } else {
+        playSound("wrong");
         sortFeedback.textContent = "Try again. Look carefully at the material of the item.";
         shakeElement(selectedButton);
       }
@@ -1520,9 +1814,11 @@
 
       if (index === q.correct) {
         score += 1;
+        playSound("success");
         addStars(3, "for a correct quiz answer");
         quizFeedback.textContent = q.feedback + " 🌟";
       } else {
+        playSound("wrong");
         button.classList.add("wrong");
         quizFeedback.textContent = "Not quite. " + q.feedback;
       }
@@ -1552,7 +1848,8 @@
       const finalScore = document.getElementById("finalScore");
       const finalMessage = document.getElementById("finalMessage");
       const badgeEmoji = state.badge.split(" ")[0] || "🏅";
-      document.getElementById("rewardBadge").textContent = badgeEmoji;
+      const rewardEmoji = document.getElementById("rewardBadgeEmoji");
+      if (rewardEmoji) rewardEmoji.textContent = badgeEmoji;
       finalScore.textContent = `Quiz score: ${score} / ${questions.length}`;
       if (score === questions.length) {
         finalMessage.textContent = "Perfect! You are a super Eco Hero. Keep reducing, reusing, and recycling.";
@@ -1584,6 +1881,7 @@
     }
 
     updateStatus();
+    initMountedAssets();
     document.getElementById("heroName").value = state.heroName === "Guest Hero" ? "" : state.heroName;
     renderPark();
     renderSortGame();
