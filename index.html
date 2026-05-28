@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eco Hero: Recycling Mission</title>
+  <meta name="description" content="A child-friendly interactive learning website about recycling and environmental awareness for children aged 6-10." />
+  <style>
+    :root {
+      --green: #2f9e44;
+      --green-dark: #1b6b35;
+      --mint: #d8f5e4;
+      --sky: #dff6ff;
+      --sky-dark: #2679a8;
+      --yellow: #fff2b8;
+      --orange: #ffb86b;
+      --pink: #ffe3ec;
+      --cream: #fffaf0;
+      --ink: #234036;
+      --soft: rgba(255,255,255,0.9);
+      --shadow: 0 16px 35px rgba(34, 91, 70, 0.18);
+      --radius: 28px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Trebuchet MS", "Comic Sans MS", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255, 242, 184, .95), transparent 28%),
+        radial-gradient(circle at 85% 18%, rgba(216, 245, 228, .95), transparent 32%),
+        radial-gradient(circle at 58% 80%, rgba(255, 227, 236, .68), transparent 28%),
+        linear-gradient(135deg, #f7fff3, #e9fbff 52%, #fff7dc);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .skip-link {
+      position: absolute;
+      top: -44px;
+      left: 10px;
+      background: #fff;
+      color: var(--green-dark);
+      padding: 10px 14px;
+      border-radius: 12px;
+      z-index: 80;
+    }
+    .skip-link:focus { top: 10px; }
+
+    .floating-leaf {
+      position: fixed;
+      pointer-events: none;
+      opacity: .38;
+      font-size: 2rem;
+      animation: floatLeaf 8s linear infinite;
+      z-index: 1;
+    }
+    .leaf-1 { top: 18%; left: 4%; animation-delay: 0s; }
+    .leaf-2 { top: 52%; right: 3%; animation-delay: 2s; }
+    .leaf-3 { bottom: 8%; left: 10%; animation-delay: 4s; }
+    .leaf-4 { bottom: 22%; right: 15%; animation-delay: 6s; }
+
+    @keyframes floatLeaf {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-22px) rotate(18deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    header {
+      width: min(1180px, calc(100% - 32px));
+      margin: 18px auto 0;
+      padding: 14px 16px;
+      border-radius: 999px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 12px;
+      z-index: 60;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #c3f7d3, #fff2b8);
+      box-shadow: inset 0 -4px 0 rgba(0,0,0,.08);
+      font-size: 1.55rem;
+      animation: wiggle 3.2s ease-in-out infinite;
+    }
+
+    @keyframes wiggle {
+      0%, 90%, 100% { transform: rotate(0deg); }
+      93% { transform: rotate(-8deg); }
+      96% { transform: rotate(8deg); }
+    }
+
+    nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    nav button,
+    .pill-button,
+    .primary-button,
+    .secondary-button,
+    .tiny-button,
+    .choice-chip {
+      border: 0;
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 900;
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease, filter .18s ease;
+    }
+
+    nav button {
+      background: transparent;
+      color: var(--ink);
+      padding: 10px 13px;
+    }
+
+    nav button.active,
+    nav button:hover,
+    nav button:focus-visible {
+      background: var(--mint);
+      outline: 3px solid transparent;
+      transform: translateY(-1px);
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      justify-content: flex-end;
+      white-space: nowrap;
+    }
+
+    .status-pill {
+      background: #fff;
+      border: 2px solid rgba(47,158,68,.18);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-weight: 900;
+      box-shadow: 0 8px 18px rgba(34,91,70,.08);
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 26px auto 52px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .screen {
+      display: none;
+      min-height: 700px;
+      animation: fadeIn .35s ease both;
+    }
+
+    .screen.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.06fr .94fr;
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .card {
+      background: var(--soft);
+      border: 3px solid rgba(255,255,255,.78);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: clamp(20px, 4vw, 38px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -90px -110px auto;
+      width: 230px;
+      height: 230px;
+      background: rgba(255, 184, 107, .17);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--yellow);
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      color: #6f4f00;
+      margin-bottom: 14px;
+    }
+
+    h1, h2, h3 { margin: 0; line-height: 1.08; }
+    h1 { font-size: clamp(2.35rem, 6vw, 5.2rem); letter-spacing: -1.5px; color: var(--green-dark); }
+    h2 { font-size: clamp(1.8rem, 4vw, 3.25rem); color: var(--green-dark); }
+    h3 { font-size: 1.35rem; color: var(--green-dark); margin-bottom: 8px; }
+
+    p, li { font-size: clamp(1rem, 1.55vw, 1.12rem); line-height: 1.65; }
+    .lead { font-size: clamp(1.12rem, 2vw, 1.38rem); max-width: 780px; }
+
+    .button-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .primary-button { background: var(--green); color: #fff; padding: 14px 22px; box-shadow: 0 10px 20px rgba(47,158,68,.25); }
+    .secondary-button { background: #fff; color: var(--green-dark); padding: 14px 22px; border: 2px solid var(--mint); }
+    .tiny-button { background: #fff; color: var(--green-dark); padding: 9px 12px; border: 2px solid rgba(47,158,68,.16); }
+    .primary-button:hover, .secondary-button:hover, .pill-button:hover, .tiny-button:hover, .choice-chip:hover { transform: translateY(-2px) scale(1.01); filter: saturate(1.05); }
+    button:focus-visible { outline: 4px solid rgba(255,184,107,.65); outline-offset: 3px; }
+
+    .progress-wrap {
+      margin: 24px 0;
+      background: rgba(255,255,255,.76);
+      border-radius: 999px;
+      padding: 8px;
+      box-shadow: inset 0 0 0 2px rgba(47,158,68,.1);
+    }
+    .progress-bar {
+      width: 0%;
+      height: 18px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--green), #74d680, #ffcf6b);
+      transition: width .35s ease;
+    }
+
+    .mascot-stage {
+      min-height: 500px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.38), rgba(255,255,255,.84)),
+        radial-gradient(circle at 50% 16%, #fff6c7, transparent 30%),
+        linear-gradient(160deg, #d9fff0, #dff6ff);
+    }
+
+    .mascot-wrap { display: grid; gap: 18px; justify-items: center; }
+
+    .speech {
+      max-width: 380px;
+      background: #fff;
+      border: 3px solid rgba(47,158,68,.2);
+      border-radius: 22px 22px 22px 8px;
+      padding: 14px 16px;
+      font-weight: 900;
+      box-shadow: 0 10px 22px rgba(34,91,70,.10);
+      min-height: 68px;
+    }
+
+    .mascot {
+      width: min(340px, 78vw);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      position: relative;
+      animation: bob 2.8s ease-in-out infinite;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .mascot .body {
+      width: 74%;
+      height: 74%;
+      border-radius: 44% 44% 50% 50%;
+      background: linear-gradient(155deg, #64d56f, #2f9e44);
+      box-shadow: inset -14px -18px 0 rgba(0,0,0,.08), var(--shadow);
+      position: relative;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: clamp(4rem, 10vw, 7rem);
+    }
+
+    .mascot .body::before,
+    .mascot .body::after {
+      content: "";
+      position: absolute;
+      width: 27%;
+      height: 20%;
+      border-radius: 999px;
+      background: #61c36b;
+      top: 40%;
+      z-index: -1;
+    }
+    .mascot .body::before { left: -12%; transform: rotate(-24deg); }
+    .mascot .body::after { right: -12%; transform: rotate(24deg); }
+
+    .cape {
+      position: absolute;
+      width: 62%;
+      height: 54%;
+      background: rgba(255,184,107,.76);
+      border-radius: 24px 24px 80px 80px;
+      top: 38%;
+      left: 20%;
+      transform: skewX(-8deg) rotate(8deg);
+      z-index: -2;
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+
+    .profile-panel {
+      display: grid;
+      gap: 14px;
+      margin-top: 24px;
+      padding: 18px;
+      background: rgba(255,255,255,.72);
+      border: 2px solid rgba(47,158,68,.18);
+      border-radius: 24px;
+    }
+
+    .name-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      border: 3px solid rgba(47,158,68,.18);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font: inherit;
+      font-weight: 800;
+      color: var(--ink);
+      background: #fff;
+    }
+
+    .badge-picker { display: flex; flex-wrap: wrap; gap: 10px; }
+    .choice-chip {
+      background: #fff;
+      padding: 10px 14px;
+      border: 2px solid rgba(47,158,68,.16);
+      color: var(--ink);
+    }
+    .choice-chip.selected { background: var(--yellow); outline: 3px solid rgba(255,184,107,.45); }
+
+    .media-hooks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 22px;
+    }
+
+    .hook-box {
+      min-height: 134px;
+      background: rgba(255,255,255,.75);
+      border: 3px dashed rgba(47,158,68,.35);
+      border-radius: 22px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+    }
+    .hook-box strong { color: var(--green-dark); }
+    .hook-code { font-size: .86rem; background: #f3fff6; padding: 6px 8px; border-radius: 10px; word-break: break-all; }
+
+    .lesson-grid, .mission-grid, .quiz-grid, .promise-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .lesson-grid {
+      align-items: stretch;
+    }
+
+    .mini-card {
+      background: rgba(255,255,255,.78);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 10px 22px rgba(34,91,70,.1);
+      border: 2px solid rgba(255,255,255,.8);
+    }
+
+    .flip-card {
+      width: 100%;
+      min-height: 310px;
+      height: 100%;
+      perspective: 900px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      cursor: pointer;
+      display: block;
+    }
+    .flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 310px;
+      transition: transform .55s ease;
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+    .flip-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      background: rgba(255,255,255,.84);
+      border: 2px solid rgba(255,255,255,.88);
+      border-radius: 22px;
+      padding: 24px 22px;
+      box-shadow: 0 10px 22px rgba(34,91,70,.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      text-align: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+    .flip-face h3,
+    .flip-face p {
+      margin: 0;
+      max-width: 100%;
+    }
+    .flip-face:not(.flip-back) p:first-of-type {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .flip-face:not(.flip-back) p:last-of-type {
+      margin-top: auto;
+      min-height: 36px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(155deg, var(--mint), #fff);
+      justify-content: center;
+    }
+
+    .big-icon {
+      display: grid;
+      place-items: center;
+      width: 74px;
+      height: 74px;
+      flex: 0 0 74px;
+      border-radius: 24px;
+      background: var(--sky);
+      font-size: 2.4rem;
+      margin: 0 0 4px;
+      box-shadow: inset 0 -5px 0 rgba(0,0,0,.06);
+    }
+
+    .mission-grid { grid-template-columns: 1fr 1fr; }
+
+    .promise-card {
+      cursor: pointer;
+      border: 3px solid rgba(255,255,255,.86);
+      transition: transform .18s ease, background .18s ease, outline .18s ease;
+    }
+    .promise-card.selected {
+      background: var(--yellow);
+      outline: 4px solid rgba(255,184,107,.55);
+      transform: translateY(-2px);
+    }
+
+    .park-layout {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 22px;
+      margin-top: 22px;
+      align-items: stretch;
+    }
+
+    .park-scene {
+      min-height: 430px;
+      border-radius: 28px;
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 16% 16%, #fff2b8, transparent 18%),
+        linear-gradient(180deg, #bdefff 0 46%, #a8e58c 46% 100%);
+      box-shadow: inset 0 -18px 0 rgba(0,0,0,.04), var(--shadow);
+      border: 4px solid rgba(255,255,255,.75);
+    }
+
+    .cloud {
+      position: absolute;
+      width: 110px;
+      height: 42px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      top: 40px;
+      animation: cloudMove 10s ease-in-out infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,.95);
+    }
+    .cloud::before { width: 52px; height: 52px; left: 18px; top: -22px; }
+    .cloud::after { width: 42px; height: 42px; right: 20px; top: -16px; }
+    .cloud.one { left: 8%; }
+    .cloud.two { right: 10%; top: 86px; animation-delay: 2s; }
+    @keyframes cloudMove {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(18px); }
+    }
+
+    .tree {
+      position: absolute;
+      bottom: 70px;
+      width: 34px;
+      height: 90px;
+      border-radius: 12px;
+      background: #9b6a38;
+    }
+    .tree::before {
+      content: "";
+      position: absolute;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: #48b45a;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -64px;
+      box-shadow: 25px 15px 0 #67ca72, -24px 18px 0 #70d174;
+    }
+    .tree.left { left: 12%; }
+    .tree.right { right: 15%; }
+
+    .path {
+      position: absolute;
+      left: 22%;
+      right: 22%;
+      bottom: -24px;
+      height: 190px;
+      background: rgba(255, 242, 184, .74);
+      border-radius: 50% 50% 0 0;
+      transform: perspective(220px) rotateX(34deg);
+    }
+
+    .litter {
+      position: absolute;
+      border: 0;
+      background: #fff;
+      border-radius: 18px;
+      font-size: 2rem;
+      width: 64px;
+      height: 56px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(34,91,70,.15);
+      transition: transform .18s ease, opacity .25s ease;
+      animation: litterPulse 1.8s ease-in-out infinite;
+    }
+    .litter:hover { transform: translateY(-4px) scale(1.04); }
+    .litter.collected { opacity: 0; transform: scale(.1) rotate(20deg); pointer-events: none; }
+    @keyframes litterPulse {
+      0%, 100% { box-shadow: 0 10px 20px rgba(34,91,70,.15); }
+      50% { box-shadow: 0 14px 26px rgba(255,184,107,.35); }
+    }
+
+    .side-panel { display: grid; gap: 16px; }
+
+    .feedback {
+      min-height: 72px;
+      border-radius: 22px;
+      padding: 16px 18px;
+      background: rgba(255,255,255,.78);
+      border: 2px solid rgba(47,158,68,.18);
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+    }
+
+    .sort-area {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .trash-list, .bin-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .trash-item, .bin-button, .answer-button {
+      border: 0;
+      border-radius: 22px;
+      font-family: inherit;
+      cursor: grab;
+      font-weight: 900;
+      box-shadow: 0 10px 20px rgba(34,91,70,.12);
+      transition: transform .18s ease, background .18s ease, outline .18s ease;
+    }
+
+    .trash-item {
+      padding: 14px 16px;
+      background: #fff;
+      min-width: 150px;
+      text-align: left;
+      border: 3px solid transparent;
+    }
+    .trash-item.selected { outline: 4px solid var(--orange); transform: scale(1.03); }
+    .trash-item.done { opacity: .45; filter: grayscale(.2); cursor: default; }
+    .trash-item.dragging { opacity: .62; transform: scale(1.05); }
+
+    .bin-button {
+      padding: 18px;
+      color: #1e382d;
+      background: var(--mint);
+      min-width: 174px;
+      min-height: 102px;
+      cursor: pointer;
+      border: 4px solid transparent;
+    }
+    .bin-button:nth-child(2) { background: var(--sky); }
+    .bin-button:nth-child(3) { background: var(--yellow); }
+    .bin-button:nth-child(4) { background: #ffe3cf; }
+    .bin-button.drag-over { border-color: #2f9e44; transform: scale(1.04); }
+    .answer-button:hover, .trash-item:hover, .bin-button:hover { transform: translateY(-2px); }
+
+    .hint-box {
+      display: none;
+      margin-top: 12px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: #fff7dc;
+      font-weight: 900;
+    }
+    .hint-box.visible { display: block; }
+
+    .quiz-card {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .question-panel {
+      background: linear-gradient(155deg, var(--mint), #fff);
+      border-radius: 24px;
+      padding: 22px;
+      min-height: 260px;
+    }
+
+    .answers { display: grid; gap: 12px; }
+    .answer-button {
+      text-align: left;
+      background: #fff;
+      padding: 16px 18px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    .answer-button.correct { background: #d8f5e4; outline: 3px solid #2f9e44; }
+    .answer-button.wrong { background: #ffe3e3; outline: 3px solid #fa5252; }
+
+    .quiz-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 16px;
+    }
+
+    .reward-box {
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .badge {
+      margin: auto;
+      width: min(320px, 78vw);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: radial-gradient(circle at 35% 28%, #fff, #fff2b8 34%, #ffcf6b 72%, #ffb86b);
+      box-shadow: var(--shadow), inset 0 -14px 0 rgba(0,0,0,.08);
+      font-size: 5rem;
+      animation: badgePop .7s ease both;
+    }
+    @keyframes badgePop {
+      from { transform: scale(.7) rotate(-8deg); opacity: 0; }
+      to { transform: scale(1) rotate(0); opacity: 1; }
+    }
+
+    .score-line {
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 900;
+      color: var(--green-dark);
+    }
+
+    .certificate {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, #fff, #fff8d6);
+      border: 3px dashed rgba(255,184,107,.65);
+    }
+
+    .teacher-panel {
+      margin-top: 20px;
+      background: rgba(255,255,255,.76);
+      border-radius: 22px;
+      padding: 18px;
+      border: 2px solid rgba(47,158,68,.18);
+    }
+
+    .teacher-panel summary {
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--green-dark);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%) translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      background: #fff;
+      color: var(--green-dark);
+      border: 3px solid rgba(47,158,68,.18);
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 900;
+      box-shadow: var(--shadow);
+      z-index: 100;
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .confetti-piece {
+      position: fixed;
+      top: -20px;
+      width: 12px;
+      height: 18px;
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 120;
+      animation: fall 1.7s linear forwards;
+    }
+    @keyframes fall {
+      to { transform: translateY(110vh) rotate(520deg); opacity: .1; }
+    }
+
+    footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 28px;
+      text-align: center;
+      color: rgba(35,64,54,.78);
+      font-size: .95rem;
+    }
+
+    @media (max-width: 980px) {
+      header { align-items: flex-start; border-radius: 26px; grid-template-columns: 1fr; }
+      nav { justify-content: flex-start; }
+      .status-bar { justify-content: flex-start; flex-wrap: wrap; }
+      .hero-grid, .reward-box, .quiz-card, .park-layout { grid-template-columns: 1fr; }
+      .lesson-grid, .media-hooks, .promise-grid { grid-template-columns: 1fr; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .screen { min-height: auto; }
+      .name-row { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="floating-leaf leaf-1">🍃</div>
+  <div class="floating-leaf leaf-2">🌿</div>
+  <div class="floating-leaf leaf-3">🍂</div>
+  <div class="floating-leaf leaf-4">🌱</div>
+
+  <header aria-label="Main navigation">
+    <div class="brand" aria-label="Eco Hero Recycling Mission">
+      <span class="brand-mark" aria-hidden="true">♻️</span>
+      <span>Eco Hero: Recycling Mission</span>
+    </div>
+    <nav>
+      <button class="nav-button active" data-target="home">Home</button>
+      <button class="nav-button" data-target="learn">Learn</button>
+      <button class="nav-button" data-target="park">Clean Park</button>
+      <button class="nav-button" data-target="sort">Sort Game</button>
+      <button class="nav-button" data-target="quiz">Quiz</button>
+      <button class="nav-button" data-target="reward">Reward</button>
+    </nav>
+    <div class="status-bar" aria-label="Mission status">
+      <span class="status-pill" id="namePill">Hero: Guest</span>
+      <span class="status-pill" id="starPill">⭐ 0</span>
+    </div>
+  </header>
+
+  <main id="main">
+    <section id="home" class="screen active" aria-labelledby="home-title">
+      <div class="hero-grid">
+        <article class="card">
+          <span class="eyebrow">🌎 For children aged 6-10</span>
+          <h1 id="home-title">Become a Little Eco Hero!</h1>
+          <p class="lead">Learn how to recycle, clean a park, sort rubbish into the correct bins, and collect stars through playful missions.</p>
+          <div class="progress-wrap" aria-label="Learning progress">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+          <p><strong>Your mission:</strong> help Eco Hero protect the planet by completing four small challenges.</p>
+
+          <div class="profile-panel" aria-label="Player setup panel">
+            <h3>Make it yours</h3>
+            <div class="name-row">
+              <input id="heroName" type="text" maxlength="18" placeholder="Type your hero name, e.g. Lina" aria-label="Hero name" />
+              <button class="primary-button" id="saveName">Save Name</button>
+            </div>
+            <div>
+              <p><strong>Choose your mission badge:</strong></p>
+              <div class="badge-picker" id="badgePicker" aria-label="Choose mission badge">
+                <button class="choice-chip selected" data-badge="♻️ Recycling Star">♻️ Recycling Star</button>
+                <button class="choice-chip" data-badge="🌳 Tree Guardian">🌳 Tree Guardian</button>
+                <button class="choice-chip" data-badge="🌊 Ocean Friend">🌊 Ocean Friend</button>
+                <button class="choice-chip" data-badge="🐢 Animal Helper">🐢 Animal Helper</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-row">
+            <button class="primary-button" data-target="learn">Start Learning</button>
+            <button class="secondary-button" data-target="park">Play First Mission</button>
+          </div>
+
+          <div class="media-hooks" aria-label="Reserved media mounting areas">
+            <div class="hook-box" data-hook="intro-video">
+              <strong>Intro Video Placeholder</strong>
+              <span>Replace later with your video.</span>
+              <span class="hook-code">assets/video/intro.mp4</span>
+              <button class="tiny-button copy-path" data-copy="assets/video/intro.mp4">Copy path</button>
+            </div>
+            <div class="hook-box" data-hook="bgm-audio">
+              <strong>BGM Placeholder</strong>
+              <span>Replace later with background music.</span>
+              <span class="hook-code">assets/audio/bgm.mp3</span>
+              <button class="tiny-button copy-path" data-copy="assets/audio/bgm.mp3">Copy path</button>
+            </div>
+            <div class="hook-box" data-hook="image-folder">
+              <strong>Image Folder</strong>
+              <span>Put your graphics here.</span>
+              <span class="hook-code">assets/images/</span>
+              <button class="tiny-button copy-path" data-copy="assets/images/">Copy path</button>
+            </div>
+          </div>
+        </article>
+
+        <aside class="card mascot-stage" aria-label="Eco Hero mascot illustration made with CSS and emoji">
+          <div class="mascot-wrap">
+            <div class="speech" id="mascotSpeech" aria-live="polite">Hi! Tap me for a green tip. Then complete the missions to collect stars!</div>
+            <div class="mascot" id="mascot" role="button" tabindex="0" aria-label="Eco Hero mascot. Press for a green tip.">
+              <div class="cape"></div>
+              <div class="body">♻️</div>
+            </div>
+            <button class="secondary-button" id="randomTip">Give me a tip!</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="learn" class="screen" aria-labelledby="learn-title">
+      <article class="card">
+        <span class="eyebrow">📚 Learning Scene</span>
+        <h2 id="learn-title">Three Green Rules</h2>
+        <p class="lead">Tap each card to flip it. Children can learn by discovering the answer instead of only reading.</p>
+        <div class="lesson-grid">
+          <button class="flip-card" aria-label="Flip Reduce card">
+            <div class="flip-inner">
+              <div class="flip-face">
+                <span class="big-icon" aria-hidden="true">🔁</span>
+                <h3>Reduce</h3>
+                <p>Use less. Choose only what you need.</p>
+                <p><strong>Tap to see an example!</strong></p>
+              </div>
+              <div class="flip-face flip-back">
+                <span class="big-icon" aria-hidden="true">🥤</span>
+                <h3>Example</h3>
+                <p>Bring a water bottle instead of buying a new plastic bottle every day.</p>
+              </div>
+            </div>
+          </button>
+          <button class="flip-card" aria-label="Flip Reuse card">
+            <div class="flip-inner">
+              <div class="flip-face">
+                <span class="big-icon" aria-hidden="true">👜</span>
+                <h3>Reuse</h3>
+                <p>Use something again before throwing it away.</p>
+                <p><strong>Tap to see an example!</strong></p>
+              </div>
+              <div class="flip-face flip-back">
+                <span class="big-icon" aria-hidden="true">📦</span>
+                <h3>Example</h3>
+                <p>Turn a cardboard box into a toy house, a storage box, or a craft project.</p>
+              </div>
+            </div>
+          </button>
+          <button class="flip-card" aria-label="Flip Recycle card">
+            <div class="flip-inner">
+              <div class="flip-face">
+                <span class="big-icon" aria-hidden="true">♻️</span>
+                <h3>Recycle</h3>
+                <p>Put materials in the correct bins so they can become useful again.</p>
+                <p><strong>Tap to see an example!</strong></p>
+              </div>
+              <div class="flip-face flip-back">
+                <span class="big-icon" aria-hidden="true">📰</span>
+                <h3>Example</h3>
+                <p>Old newspapers can go into a paper bin and may become new paper products.</p>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="mission-grid">
+          <div class="mini-card">
+            <h3>Why does recycling matter?</h3>
+            <p>Recycling saves resources, keeps parks and oceans cleaner, and helps animals live in safer homes.</p>
+          </div>
+          <div class="mini-card">
+            <h3>Tap a promise</h3>
+            <p>Choose one green promise. It will appear on your reward certificate.</p>
+          </div>
+        </div>
+        <div class="promise-grid" id="promiseGrid">
+          <div class="mini-card promise-card" tabindex="0" data-promise="I will use a reusable bottle.">🥤 I will use a reusable bottle.</div>
+          <div class="mini-card promise-card" tabindex="0" data-promise="I will put rubbish in the correct bin.">🗑️ I will put rubbish in the correct bin.</div>
+          <div class="mini-card promise-card" tabindex="0" data-promise="I will keep the park clean.">🌳 I will keep the park clean.</div>
+        </div>
+        <div class="feedback" id="learnFeedback" aria-live="polite">Flip the cards and choose a promise to collect learning stars.</div>
+        <div class="button-row">
+          <button class="primary-button" data-target="park">Next: Clean the Park</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="park" class="screen" aria-labelledby="park-title">
+      <article class="card">
+        <span class="eyebrow">🌳 Mini Game</span>
+        <h2 id="park-title">Clean the Park</h2>
+        <p class="lead">Find and click all the rubbish hiding in the park. This adds a simple game challenge before the sorting activity.</p>
+        <div class="park-layout">
+          <div class="park-scene" id="parkScene" aria-label="Interactive park scene with rubbish to collect">
+            <div class="cloud one"></div>
+            <div class="cloud two"></div>
+            <div class="tree left"></div>
+            <div class="tree right"></div>
+            <div class="path"></div>
+          </div>
+          <div class="side-panel">
+            <div class="mini-card">
+              <h3>Mission checklist</h3>
+              <p id="parkCounter">Rubbish collected: 0 / 6</p>
+              <p>Tip: some items are near the trees and some are on the path.</p>
+              <button class="secondary-button" id="resetPark">Reset Park</button>
+            </div>
+            <div class="feedback" id="parkFeedback" aria-live="polite">Click a piece of rubbish to clean the park.</div>
+            <div class="mini-card">
+              <h3>Think about it</h3>
+              <p>After collecting rubbish, we should sort it. That is why the next mission is the recycling bin game.</p>
+            </div>
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="primary-button" data-target="sort">Next: Sort the Waste</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="sort" class="screen" aria-labelledby="sort-title">
+      <article class="card">
+        <span class="eyebrow">🎮 Drag / Click Game</span>
+        <h2 id="sort-title">Choose the Correct Bin</h2>
+        <p class="lead">Drag an item to a bin, or click one item first and then click the correct bin. Eco Hero gives instant feedback.</p>
+        <div class="sort-area">
+          <div>
+            <h3>Items in the park</h3>
+            <div class="trash-list" id="trashList"></div>
+          </div>
+          <div>
+            <h3>Bins</h3>
+            <div class="bin-list" id="binList"></div>
+          </div>
+          <div class="feedback" id="sortFeedback" aria-live="polite">Pick an item to begin.</div>
+          <div class="hint-box" id="sortHint">Hint: paper feels thin and can be written on; plastic is often a bottle or cup; glass can be a jar; food waste comes from fruit or meals.</div>
+        </div>
+        <div class="button-row">
+          <button class="secondary-button" id="resetSort">Reset Game</button>
+          <button class="secondary-button" id="needHint">Need a clue?</button>
+          <button class="primary-button" data-target="quiz">Next: Eco Quiz</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="quiz" class="screen" aria-labelledby="quiz-title">
+      <article class="card">
+        <span class="eyebrow">🧠 Interactive Quiz</span>
+        <h2 id="quiz-title">Eco Hero Quiz</h2>
+        <p class="lead">Answer the questions and collect stars. The quiz gives feedback immediately after each answer.</p>
+        <div class="quiz-topline">
+          <p class="score-line" id="quizScore">Score: 0 / 0</p>
+          <p class="score-line" id="quizProgress">Question 1 / 5</p>
+        </div>
+        <div class="quiz-grid">
+          <div class="quiz-card mini-card">
+            <div class="question-panel">
+              <h3 id="questionText">Question will appear here.</h3>
+              <p id="questionHint">Choose the best answer.</p>
+              <button class="tiny-button" id="quizHintButton">Show hint</button>
+            </div>
+            <div class="answers" id="answers"></div>
+          </div>
+        </div>
+        <div class="feedback" id="quizFeedback" aria-live="polite">Press an answer to start.</div>
+        <div class="button-row">
+          <button class="secondary-button" id="restartQuiz">Restart Quiz</button>
+          <button class="primary-button" data-target="reward">View Reward</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="reward" class="screen" aria-labelledby="reward-title">
+      <article class="card reward-box">
+        <div class="badge" aria-label="Eco hero badge" id="rewardBadge">🏅</div>
+        <div>
+          <span class="eyebrow">🎉 Reward Screen</span>
+          <h2 id="reward-title">Great Job, Eco Hero!</h2>
+          <p class="lead" id="finalMessage">You completed the learning mission. Keep practicing green habits every day.</p>
+          <p class="score-line" id="finalScore">Your score will appear here.</p>
+          <div class="certificate" aria-label="Reward certificate">
+            <h3>Eco Hero Certificate</h3>
+            <p id="certificateName">Awarded to: Guest Hero</p>
+            <p id="certificateBadge">Mission badge: Recycling Star</p>
+            <p id="certificatePromise">Green promise: Choose one promise on the Learn page.</p>
+            <p id="certificateStars">Stars collected: 0</p>
+          </div>
+          <div class="button-row">
+            <button class="primary-button" data-target="home">Back to Main Menu</button>
+            <button class="secondary-button" data-target="park">Play Again</button>
+            <button class="secondary-button" id="printCertificate">Print / Save Certificate</button>
+          </div>
+
+          <details class="teacher-panel">
+            <summary>Teacher / Project Notes</summary>
+            <p><strong>Text and graphics:</strong> child-friendly cards, large icons, simple vocabulary, colorful layout, and CSS-made scenes.</p>
+            <p><strong>Audio and video:</strong> reserved placeholders are prepared for intro narration video and BGM. No external media is required for the current version.</p>
+            <p><strong>Animation:</strong> CSS floating leaves, mascot movement, card flipping, clouds, item pulse, progress bar, and badge pop animation.</p>
+            <p><strong>Interaction:</strong> name input, badge selection, mascot tips, flip cards, promise selection, park clean-up game, drag/click sorting game, quiz, score, stars, feedback, and reward certificate.</p>
+            <p><strong>Gitee deployment:</strong> upload this file and the assets folder to the repository root. Keep all media paths relative.</p>
+          </details>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <footer>
+    Eco Hero: Recycling Mission · Interactive Digital Learning Activity · Static HTML version
+  </footer>
+
+  <script>
+    /*
+      GITEE / GITHUB PAGES ASSET HOOKS
+      -------------------------------------------------
+      This website does not require a build tool.
+      Upload index.html and the assets folder to the root of your Gitee repository.
+      Later, replace these relative paths with your own media files.
+    */
+    const MEDIA_HOOKS = {
+      introVideo: "assets/video/intro.mp4",
+      backgroundMusic: "assets/audio/bgm.mp3",
+      heroImage: "assets/images/eco-hero.png",
+      rewardImage: "assets/images/reward-badge.png"
+    };
+
+    const state = {
+      heroName: localStorage.getItem("ecoHeroName") || "Guest Hero",
+      badge: localStorage.getItem("ecoHeroBadge") || "♻️ Recycling Star",
+      promise: localStorage.getItem("ecoHeroPromise") || "Choose one promise on the Learn page.",
+      stars: Number(localStorage.getItem("ecoHeroStars") || 0),
+      learnedCards: new Set(),
+      collectedPark: new Set(),
+      sortedItems: new Set()
+    };
+
+    const screens = Array.from(document.querySelectorAll(".screen"));
+    const navButtons = Array.from(document.querySelectorAll(".nav-button"));
+    const allTargetButtons = Array.from(document.querySelectorAll("[data-target]"));
+    const progressBar = document.getElementById("progressBar");
+    const starPill = document.getElementById("starPill");
+    const namePill = document.getElementById("namePill");
+    const toast = document.getElementById("toast");
+    const progressMap = { home: 10, learn: 30, park: 48, sort: 68, quiz: 88, reward: 100 };
+
+    function saveState() {
+      localStorage.setItem("ecoHeroName", state.heroName);
+      localStorage.setItem("ecoHeroBadge", state.badge);
+      localStorage.setItem("ecoHeroPromise", state.promise);
+      localStorage.setItem("ecoHeroStars", String(state.stars));
+    }
+
+    function updateStatus() {
+      namePill.textContent = `Hero: ${state.heroName}`;
+      starPill.textContent = `⭐ ${state.stars}`;
+      saveState();
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 1500);
+    }
+
+    function addStars(amount, reason) {
+      state.stars += amount;
+      updateStatus();
+      showToast(`+${amount} ⭐ ${reason}`);
+    }
+
+    function showScreen(targetId) {
+      screens.forEach(screen => screen.classList.toggle("active", screen.id === targetId));
+      navButtons.forEach(button => button.classList.toggle("active", button.dataset.target === targetId));
+      progressBar.style.width = `${progressMap[targetId] || 0}%`;
+      if (targetId === "reward") updateReward();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    allTargetButtons.forEach(button => {
+      button.addEventListener("click", () => showScreen(button.dataset.target));
+    });
+
+    const tips = [
+      "A reusable bottle can save many plastic bottles.",
+      "Clean parks help birds, cats, insects, and people stay safe.",
+      "Before throwing something away, ask: can I reuse it?",
+      "Paper, plastic, glass, and food waste need different bins.",
+      "Small green habits become big planet-saving powers!"
+    ];
+
+    function showRandomTip() {
+      const tip = tips[Math.floor(Math.random() * tips.length)];
+      document.getElementById("mascotSpeech").textContent = tip;
+    }
+
+    document.getElementById("mascot").addEventListener("click", showRandomTip);
+    document.getElementById("mascot").addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") showRandomTip();
+    });
+    document.getElementById("randomTip").addEventListener("click", showRandomTip);
+
+    document.getElementById("saveName").addEventListener("click", () => {
+      const input = document.getElementById("heroName");
+      const value = input.value.trim();
+      if (!value) {
+        showToast("Please type a hero name first.");
+        return;
+      }
+      state.heroName = value;
+      updateStatus();
+      document.getElementById("mascotSpeech").textContent = `Nice to meet you, ${state.heroName}! Ready for the mission?`;
+      showToast("Hero name saved!");
+    });
+
+    const badgeButtons = Array.from(document.querySelectorAll(".choice-chip"));
+    badgeButtons.forEach(button => {
+      if (button.dataset.badge === state.badge) button.classList.add("selected");
+      button.addEventListener("click", () => {
+        badgeButtons.forEach(btn => btn.classList.remove("selected"));
+        button.classList.add("selected");
+        state.badge = button.dataset.badge;
+        saveState();
+        showToast("Mission badge selected!");
+      });
+    });
+
+    document.querySelectorAll(".copy-path").forEach(button => {
+      button.addEventListener("click", async () => {
+        const path = button.dataset.copy;
+        try {
+          await navigator.clipboard.writeText(path);
+          showToast("Path copied!");
+        } catch (error) {
+          showToast(path);
+        }
+      });
+    });
+
+    document.querySelectorAll(".flip-card").forEach((card, index) => {
+      card.addEventListener("click", () => {
+        card.classList.toggle("flipped");
+        if (!state.learnedCards.has(index)) {
+          state.learnedCards.add(index);
+          addStars(1, "for learning a green rule");
+          document.getElementById("learnFeedback").textContent = `Great discovery! You flipped ${state.learnedCards.size} / 3 cards.`;
+        }
+      });
+    });
+
+    const promiseCards = Array.from(document.querySelectorAll(".promise-card"));
+    promiseCards.forEach(card => {
+      card.addEventListener("click", () => choosePromise(card));
+      card.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") choosePromise(card);
+      });
+    });
+
+    function choosePromise(card) {
+      promiseCards.forEach(item => item.classList.remove("selected"));
+      card.classList.add("selected");
+      state.promise = card.dataset.promise;
+      saveState();
+      document.getElementById("learnFeedback").textContent = `Promise saved: ${state.promise}`;
+      if (!choosePromise.awarded) {
+        choosePromise.awarded = true;
+        addStars(2, "for making a green promise");
+      }
+    }
+
+    const parkItems = [
+      { id: "can", label: "🥫", top: "58%", left: "18%", name: "can" },
+      { id: "bottle", label: "🧴", top: "68%", left: "42%", name: "plastic bottle" },
+      { id: "paper", label: "📰", top: "74%", left: "62%", name: "old newspaper" },
+      { id: "peel", label: "🍌", top: "56%", left: "73%", name: "banana peel" },
+      { id: "cup", label: "🥤", top: "44%", left: "32%", name: "plastic cup" },
+      { id: "box", label: "📦", top: "76%", left: "10%", name: "cardboard box" }
+    ];
+
+    const parkScene = document.getElementById("parkScene");
+    const parkCounter = document.getElementById("parkCounter");
+    const parkFeedback = document.getElementById("parkFeedback");
+
+    function renderPark() {
+      state.collectedPark.clear();
+      parkScene.querySelectorAll(".litter").forEach(item => item.remove());
+      parkItems.forEach(item => {
+        const button = document.createElement("button");
+        button.className = "litter";
+        button.textContent = item.label;
+        button.style.top = item.top;
+        button.style.left = item.left;
+        button.dataset.id = item.id;
+        button.setAttribute("aria-label", `Collect ${item.name}`);
+        button.addEventListener("click", () => collectParkItem(button, item));
+        parkScene.appendChild(button);
+      });
+      parkCounter.textContent = `Rubbish collected: 0 / ${parkItems.length}`;
+      parkFeedback.textContent = "Click a piece of rubbish to clean the park.";
+    }
+
+    function collectParkItem(button, item) {
+      if (state.collectedPark.has(item.id)) return;
+      state.collectedPark.add(item.id);
+      button.classList.add("collected");
+      parkCounter.textContent = `Rubbish collected: ${state.collectedPark.size} / ${parkItems.length}`;
+      parkFeedback.textContent = `You picked up the ${item.name}! Nice clean-up power.`;
+      addStars(1, "for cleaning the park");
+      if (state.collectedPark.size === parkItems.length) {
+        parkFeedback.textContent = "Fantastic! The park is clean. Now sort the waste into the right bins.";
+        burstConfetti(16);
+      }
+    }
+
+    document.getElementById("resetPark").addEventListener("click", renderPark);
+
+    const wasteItems = [
+      { id: "newspaper", label: "📰 Old newspaper", type: "paper" },
+      { id: "bottle", label: "🥤 Plastic bottle", type: "plastic" },
+      { id: "jar", label: "🫙 Glass jar", type: "glass" },
+      { id: "banana", label: "🍌 Banana peel", type: "food" },
+      { id: "box", label: "📦 Cardboard box", type: "paper" },
+      { id: "cup", label: "🧴 Plastic cup", type: "plastic" }
+    ];
+
+    const bins = [
+      { type: "paper", label: "📄 Paper Bin" },
+      { type: "plastic", label: "🧴 Plastic Bin" },
+      { type: "glass", label: "🫙 Glass Bin" },
+      { type: "food", label: "🍌 Food Waste Bin" }
+    ];
+
+    let selectedWaste = null;
+    let sortedCount = 0;
+
+    const trashList = document.getElementById("trashList");
+    const binList = document.getElementById("binList");
+    const sortFeedback = document.getElementById("sortFeedback");
+    const resetSortButton = document.getElementById("resetSort");
+
+    function renderSortGame() {
+      selectedWaste = null;
+      sortedCount = 0;
+      state.sortedItems.clear();
+      trashList.innerHTML = "";
+      binList.innerHTML = "";
+      document.getElementById("sortHint").classList.remove("visible");
+      sortFeedback.textContent = "Pick an item to begin.";
+
+      wasteItems.forEach(item => {
+        const button = document.createElement("button");
+        button.className = "trash-item";
+        button.textContent = item.label;
+        button.dataset.id = item.id;
+        button.dataset.type = item.type;
+        button.draggable = true;
+        button.addEventListener("click", () => selectWaste(button, item));
+        button.addEventListener("dragstart", event => {
+          if (button.classList.contains("done")) return;
+          button.classList.add("dragging");
+          event.dataTransfer.setData("text/plain", item.id);
+        });
+        button.addEventListener("dragend", () => button.classList.remove("dragging"));
+        trashList.appendChild(button);
+      });
+
+      bins.forEach(bin => {
+        const button = document.createElement("button");
+        button.className = "bin-button";
+        button.innerHTML = `<span style="font-size:1.8rem;display:block;margin-bottom:6px;">${bin.label.split(" ")[0]}</span>${bin.label.replace(/^\S+\s/, "")}`;
+        button.dataset.type = bin.type;
+        button.addEventListener("click", () => checkBin(bin.type));
+        button.addEventListener("dragover", event => {
+          event.preventDefault();
+          button.classList.add("drag-over");
+        });
+        button.addEventListener("dragleave", () => button.classList.remove("drag-over"));
+        button.addEventListener("drop", event => {
+          event.preventDefault();
+          button.classList.remove("drag-over");
+          const itemId = event.dataTransfer.getData("text/plain");
+          const item = wasteItems.find(entry => entry.id === itemId);
+          if (item) {
+            selectedWaste = item;
+            checkBin(bin.type);
+          }
+        });
+        binList.appendChild(button);
+      });
+    }
+
+    function selectWaste(button, item) {
+      if (button.classList.contains("done")) return;
+      document.querySelectorAll(".trash-item").forEach(el => el.classList.remove("selected"));
+      button.classList.add("selected");
+      selectedWaste = item;
+      sortFeedback.textContent = `You selected ${item.label}. Now choose the correct bin.`;
+    }
+
+    function checkBin(binType) {
+      if (!selectedWaste) {
+        sortFeedback.textContent = "Please choose an item first.";
+        return;
+      }
+
+      const selectedButton = document.querySelector(`.trash-item[data-id="${selectedWaste.id}"]`);
+      if (!selectedButton || selectedButton.classList.contains("done")) return;
+
+      if (selectedWaste.type === binType) {
+        sortedCount += 1;
+        state.sortedItems.add(selectedWaste.id);
+        selectedButton.classList.add("done");
+        selectedButton.classList.remove("selected");
+        sortFeedback.textContent = `Correct! ${selectedWaste.label} belongs in the ${binType} bin. 🌟`;
+        addStars(2, "for correct sorting");
+        selectedWaste = null;
+        if (sortedCount === wasteItems.length) {
+          sortFeedback.textContent = "Amazing! You sorted all items correctly. Now try the quiz! 🌈";
+          burstConfetti(20);
+        }
+      } else {
+        sortFeedback.textContent = "Try again. Look carefully at the material of the item.";
+        shakeElement(selectedButton);
+      }
+    }
+
+    function shakeElement(element) {
+      element.animate([
+        { transform: "translateX(0)" },
+        { transform: "translateX(-8px)" },
+        { transform: "translateX(8px)" },
+        { transform: "translateX(0)" }
+      ], { duration: 260, iterations: 1 });
+    }
+
+    resetSortButton.addEventListener("click", renderSortGame);
+    document.getElementById("needHint").addEventListener("click", () => {
+      document.getElementById("sortHint").classList.toggle("visible");
+    });
+
+    const questions = [
+      {
+        question: "Which action helps us reduce waste?",
+        hint: "Think before using something new.",
+        answers: ["Use a reusable bottle", "Throw paper on the ground", "Buy a new plastic bag every day"],
+        correct: 0,
+        feedback: "Yes! A reusable bottle helps reduce plastic waste."
+      },
+      {
+        question: "Where should an old newspaper go?",
+        hint: "Newspapers are made of paper.",
+        answers: ["Food Waste Bin", "Paper Bin", "Glass Bin"],
+        correct: 1,
+        feedback: "Correct! Newspapers can go into the paper bin."
+      },
+      {
+        question: "Why should we keep parks clean?",
+        hint: "Think about people, animals, and nature.",
+        answers: ["So animals and people stay safe", "So rubbish can grow", "So recycling becomes impossible"],
+        correct: 0,
+        feedback: "Great! Clean parks are safer for everyone."
+      },
+      {
+        question: "What does reuse mean?",
+        hint: "Use something more than once.",
+        answers: ["Use again before throwing away", "Break things on purpose", "Mix all rubbish together"],
+        correct: 0,
+        feedback: "Exactly! Reuse means using something again."
+      },
+      {
+        question: "Which item is food waste?",
+        hint: "It comes from food and can rot naturally.",
+        answers: ["Banana peel", "Glass jar", "Notebook paper"],
+        correct: 0,
+        feedback: "Right! A banana peel is food waste."
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionText = document.getElementById("questionText");
+    const questionHint = document.getElementById("questionHint");
+    const answers = document.getElementById("answers");
+    const quizFeedback = document.getElementById("quizFeedback");
+    const quizScore = document.getElementById("quizScore");
+    const quizProgress = document.getElementById("quizProgress");
+    const restartQuizButton = document.getElementById("restartQuiz");
+
+    function renderQuiz() {
+      answered = false;
+      const q = questions[currentQuestion];
+      questionText.textContent = `${currentQuestion + 1}. ${q.question}`;
+      questionHint.textContent = "Press 'Show hint' if you need help.";
+      quizScore.textContent = `Score: ${score} / ${questions.length}`;
+      quizProgress.textContent = `Question ${currentQuestion + 1} / ${questions.length}`;
+      quizFeedback.textContent = "Choose the best answer.";
+      answers.innerHTML = "";
+
+      q.answers.forEach((answer, index) => {
+        const button = document.createElement("button");
+        button.className = "answer-button";
+        button.textContent = answer;
+        button.addEventListener("click", () => handleAnswer(button, index));
+        answers.appendChild(button);
+      });
+    }
+
+    document.getElementById("quizHintButton").addEventListener("click", () => {
+      const q = questions[currentQuestion];
+      questionHint.textContent = q.hint;
+    });
+
+    function handleAnswer(button, index) {
+      if (answered) return;
+      answered = true;
+      const q = questions[currentQuestion];
+      const buttons = Array.from(document.querySelectorAll(".answer-button"));
+      buttons[q.correct].classList.add("correct");
+
+      if (index === q.correct) {
+        score += 1;
+        addStars(3, "for a correct quiz answer");
+        quizFeedback.textContent = q.feedback + " 🌟";
+      } else {
+        button.classList.add("wrong");
+        quizFeedback.textContent = "Not quite. " + q.feedback;
+      }
+
+      quizScore.textContent = `Score: ${score} / ${questions.length}`;
+
+      setTimeout(() => {
+        if (currentQuestion < questions.length - 1) {
+          currentQuestion += 1;
+          renderQuiz();
+        } else {
+          quizFeedback.textContent = "Quiz complete! Go to the reward screen to see your badge.";
+          burstConfetti(score >= 4 ? 26 : 12);
+        }
+      }, 1150);
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      renderQuiz();
+    }
+
+    restartQuizButton.addEventListener("click", restartQuiz);
+
+    function updateReward() {
+      const finalScore = document.getElementById("finalScore");
+      const finalMessage = document.getElementById("finalMessage");
+      const badgeEmoji = state.badge.split(" ")[0] || "🏅";
+      document.getElementById("rewardBadge").textContent = badgeEmoji;
+      finalScore.textContent = `Quiz score: ${score} / ${questions.length}`;
+      if (score === questions.length) {
+        finalMessage.textContent = "Perfect! You are a super Eco Hero. Keep reducing, reusing, and recycling.";
+      } else if (score >= 3) {
+        finalMessage.textContent = "Well done! You learned many green habits. Try again to collect a perfect score.";
+      } else {
+        finalMessage.textContent = "Good start! Review the learning cards and try the quiz again.";
+      }
+      document.getElementById("certificateName").textContent = `Awarded to: ${state.heroName}`;
+      document.getElementById("certificateBadge").textContent = `Mission badge: ${state.badge.replace(/^\S+\s/, "")}`;
+      document.getElementById("certificatePromise").textContent = `Green promise: ${state.promise}`;
+      document.getElementById("certificateStars").textContent = `Stars collected: ${state.stars}`;
+    }
+
+    document.getElementById("printCertificate").addEventListener("click", () => window.print());
+
+    function burstConfetti(count) {
+      const colors = ["#2f9e44", "#ffb86b", "#fff2b8", "#74d680", "#65c4f2", "#ff8fab"];
+      for (let i = 0; i < count; i += 1) {
+        const piece = document.createElement("span");
+        piece.className = "confetti-piece";
+        piece.style.left = `${Math.random() * 100}vw`;
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = `${Math.random() * .5}s`;
+        piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+        document.body.appendChild(piece);
+        setTimeout(() => piece.remove(), 2200);
+      }
+    }
+
+    updateStatus();
+    document.getElementById("heroName").value = state.heroName === "Guest Hero" ? "" : state.heroName;
+    renderPark();
+    renderSortGame();
+    renderQuiz();
+    showScreen("home");
+  </script>
+</body>
+</html>
