@@ -374,9 +374,13 @@
     .media-hooks,
     .extra-media-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 14px;
       margin-top: 22px;
+    }
+
+    .video-preview-card {
+      grid-column: 1 / -1;
     }
 
     .hook-box {
@@ -971,6 +975,10 @@
       background: #e8f8ee;
     }
 
+    .video-preview-card .asset-preview-video {
+      height: 230px;
+    }
+
     .sfx-card {
       grid-column: 1 / -1;
       min-height: auto;
@@ -1096,38 +1104,22 @@
               <audio id="bgmAudio" loop preload="auto">
                 <source src="assets/audio/bgm/eco-hero-main-bgm.mp3" type="audio/mpeg" />
               </audio>
-              <p class="path-line">Mounted path: <span class="hook-code">assets/audio/bgm/eco-hero-main-bgm.mp3</span></p>
-              <div class="bgm-tip" id="bgmWarning">Browser autoplay is blocked. Click “Play BGM” to start the music.</div>
             </div>
 
-            <div class="extra-media-grid" aria-label="Mounted extra media and sound effects">
+            <div class="extra-media-grid" aria-label="Mounted extra media">
               <div class="asset-preview-card">
                 <strong>🏅 Reward Badge</strong>
                 <img class="asset-preview-img" src="assets/images/reward-badge.png" alt="Eco Hero reward badge preview" />
-                <p class="path-line">assets/images/reward-badge.png</p>
               </div>
               <div class="asset-preview-card">
                 <strong>📜 Certificate Background</strong>
                 <img class="asset-preview-img" src="assets/images/certificate-bg.png" alt="Eco Hero certificate background preview" />
-                <p class="path-line">assets/images/certificate-bg.png</p>
               </div>
-              <div class="asset-preview-card">
+              <div class="asset-preview-card video-preview-card">
                 <strong>🎮 How-to-play Video</strong>
                 <video class="asset-preview-video" controls playsinline preload="metadata">
                   <source src="assets/video/how-to-play.mp4" type="video/mp4" />
                 </video>
-                <p class="path-line">assets/video/how-to-play.mp4</p>
-              </div>
-              <div class="asset-preview-card sfx-card">
-                <strong>🔊 Sound Effects Test</strong>
-                <div class="sfx-buttons" aria-label="Sound effect test buttons">
-                  <button class="sfx-test-button" type="button" data-sfx-test="click">Click</button>
-                  <button class="sfx-test-button" type="button" data-sfx-test="success">Success</button>
-                  <button class="sfx-test-button" type="button" data-sfx-test="wrong">Wrong</button>
-                  <button class="sfx-test-button" type="button" data-sfx-test="star">Star</button>
-                  <button class="sfx-test-button" type="button" data-sfx-test="page">Page</button>
-                </div>
-                <p class="path-line">assets/audio/sfx/click.wav · success.wav · wrong.wav · star_collect.wav · page_pop.wav</p>
               </div>
             </div>
           </div>
@@ -1493,8 +1485,6 @@
             if (bgmAudio.paused) {
               await bgmAudio.play();
               musicToggle.textContent = "Pause BGM";
-              const warning = document.getElementById("bgmWarning");
-              if (warning) warning.classList.add("visible");
             } else {
               bgmAudio.pause();
               musicToggle.textContent = "Play BGM";
