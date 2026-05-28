@@ -1148,6 +1148,103 @@
       }
     }
 
+
+    /* Final homepage layout fix: compact mascot, equal video ratio, global BGM button */
+    .music-icon-button {
+      width: 44px;
+      height: 44px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      border: 2px solid rgba(47,158,68,.18);
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(34,91,70,.08);
+      cursor: pointer;
+      font-size: 1.15rem;
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+    }
+
+    .music-icon-button:hover,
+    .music-icon-button.playing {
+      background: var(--yellow);
+      transform: translateY(-1px) scale(1.03);
+      box-shadow: 0 10px 22px rgba(34,91,70,.14);
+    }
+
+    #home .home-top-grid {
+      grid-template-columns: minmax(0, 1.18fr) minmax(280px, .74fr);
+      align-items: center;
+      gap: 28px;
+    }
+
+    #home .home-mascot-card {
+      align-self: center;
+      min-height: auto;
+      padding: 24px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.55), rgba(255,255,255,.78)),
+        linear-gradient(160deg, #d9fff0, #eefcff);
+    }
+
+    #home .mascot-wrap {
+      min-height: auto;
+      align-content: center;
+      gap: 14px;
+    }
+
+    #home .hero-asset-image {
+      width: min(260px, 76%);
+      max-height: 285px;
+    }
+
+    #home .speech {
+      max-width: 360px;
+      min-height: auto;
+    }
+
+    #home .media-preview.home-media-grid {
+      margin-top: 28px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      align-items: start;
+    }
+
+    #home .intro-video-card,
+    #home .tutorial-wide-card {
+      grid-column: auto;
+      min-height: auto;
+    }
+
+    #home .intro-video,
+    #home .asset-preview-video {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16 / 9;
+      max-height: none;
+      min-height: 0;
+      object-fit: contain;
+      background: #e8f8ee;
+      border-radius: 20px;
+      border: 3px solid rgba(255,255,255,.8);
+    }
+
+    #home .media-card strong {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 980px) {
+      #home .home-top-grid,
+      #home .media-preview.home-media-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #home .hero-asset-image {
+        width: min(260px, 76vw);
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1172,9 +1269,14 @@
     </nav>
     <div class="status-bar" aria-label="Mission status">
       <span class="status-pill" id="namePill">Hero: Guest</span>
+      <button class="music-icon-button" id="globalMusicToggle" type="button" aria-label="Play background music" title="Play / Pause BGM">🔇</button>
       <span class="status-pill" id="starPill">⭐ 0</span>
     </div>
   </header>
+
+  <audio id="bgmAudio" loop preload="auto">
+    <source src="assets/audio/bgm/eco-hero-main-bgm.mp3" type="audio/mpeg" />
+  </audio>
 
   <main id="main">
     <section id="home" class="screen active" aria-labelledby="home-title">
@@ -1235,33 +1337,11 @@
             <div class="asset-warning" id="introVideoWarning">If the video does not appear on GitHub/Gitee Pages, check the file name and letter case: intro.mp4.</div>
           </div>
 
-          <div class="home-side-stack">
-            <div class="media-card bgm-card">
-              <strong>🎵 Background Music</strong>
-              <div class="audio-controls">
-                <button class="secondary-button" id="musicToggle" type="button">Play BGM</button>
-              </div>
-              <audio id="bgmAudio" loop preload="auto">
-                <source src="assets/audio/bgm/eco-hero-main-bgm.mp3" type="audio/mpeg" />
-              </audio>
-            </div>
-
-            <div class="extra-media-grid asset-mini-grid" aria-label="Mounted extra image media">
-              <div class="asset-preview-card">
-                <strong>🏅 Reward Badge</strong>
-                <img class="asset-preview-img" src="assets/images/reward-badge.png" alt="Eco Hero reward badge preview" />
-              </div>
-              <div class="asset-preview-card">
-                <strong>📜 Certificate Background</strong>
-                <img class="asset-preview-img" src="assets/images/certificate-bg.png" alt="Eco Hero certificate background preview" />
-              </div>
-            </div>
-          </div>
-
           <div class="media-card video-preview-card tutorial-wide-card">
             <strong>🎮 How-to-play Video</strong>
             <video class="asset-preview-video" controls playsinline preload="metadata">
               <source src="assets/video/how-to-play.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
             </video>
           </div>
         </div>
@@ -1607,21 +1687,28 @@
       }
 
       const bgmAudio = document.getElementById("bgmAudio");
-      const musicToggle = document.getElementById("musicToggle");
+      const musicToggle = document.getElementById("globalMusicToggle");
       if (musicToggle && bgmAudio) {
+        const syncMusicButton = () => {
+          musicToggle.textContent = bgmAudio.paused ? "🔇" : "🔊";
+          musicToggle.classList.toggle("playing", !bgmAudio.paused);
+          musicToggle.setAttribute("aria-label", bgmAudio.paused ? "Play background music" : "Pause background music");
+        };
         musicToggle.addEventListener("click", async () => {
           try {
             if (bgmAudio.paused) {
               await bgmAudio.play();
-              musicToggle.textContent = "Pause BGM";
             } else {
               bgmAudio.pause();
-              musicToggle.textContent = "Play BGM";
             }
+            syncMusicButton();
           } catch (error) {
             showToast("BGM file not found. Check assets/audio/bgm/eco-hero-main-bgm.mp3");
           }
         });
+        bgmAudio.addEventListener("play", syncMusicButton);
+        bgmAudio.addEventListener("pause", syncMusicButton);
+        syncMusicButton();
       }
 
       document.querySelectorAll("[data-sfx-test]").forEach((button) => {
