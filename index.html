@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Eco Hero: Recycling Mission</title>
+  <!-- Media layout fixed version: larger learning images, real bottom previews, SFX test buttons -->
   <meta name="description" content="A child-friendly interactive learning website about recycling and environmental awareness for children aged 6-10." />
   <style>
     :root {
@@ -370,9 +371,10 @@
     }
     .choice-chip.selected { background: var(--yellow); outline: 3px solid rgba(255,184,107,.45); }
 
-    .media-hooks {
+    .media-hooks,
+    .extra-media-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 14px;
       margin-top: 22px;
     }
@@ -412,7 +414,7 @@
 
     .flip-card {
       width: 100%;
-      min-height: 310px;
+      min-height: 390px;
       height: 100%;
       perspective: 900px;
       padding: 0;
@@ -426,7 +428,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 310px;
+      min-height: 390px;
       transition: transform .55s ease;
       transform-style: preserve-3d;
     }
@@ -438,14 +440,14 @@
       background: rgba(255,255,255,.84);
       border: 2px solid rgba(255,255,255,.88);
       border-radius: 22px;
-      padding: 24px 22px;
+      padding: 22px;
       box-shadow: 0 10px 22px rgba(34,91,70,.1);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
       text-align: center;
-      gap: 12px;
+      gap: 14px;
       overflow: hidden;
     }
     .flip-face h3,
@@ -454,7 +456,7 @@
       max-width: 100%;
     }
     .flip-face:not(.flip-back) p:first-of-type {
-      min-height: 76px;
+      min-height: 68px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -857,14 +859,14 @@
     }
 
     .card-art {
-      width: 98px;
-      height: 98px;
+      width: min(100%, 245px);
+      height: 150px;
       object-fit: contain;
       border-radius: 24px;
       background: var(--sky);
-      padding: 8px;
+      padding: 6px;
       display: none;
-      box-shadow: inset 0 -5px 0 rgba(0,0,0,.06);
+      box-shadow: inset 0 -5px 0 rgba(0,0,0,.06), 0 8px 18px rgba(34,91,70,.08);
     }
 
     .card-art.visible {
@@ -922,6 +924,81 @@
 
     .asset-warning.visible {
       display: block;
+    }
+
+
+    .bgm-tip {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #fff7dc;
+      border-radius: 14px;
+      font-weight: 900;
+      color: #6f4f00;
+    }
+
+    .path-line {
+      margin-top: 8px;
+      font-size: .82rem;
+      opacity: .78;
+    }
+
+    .asset-preview-card {
+      min-height: 210px;
+      background: rgba(255,255,255,.78);
+      border: 2px solid rgba(47,158,68,.16);
+      border-radius: 22px;
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(34,91,70,.08);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+
+    .asset-preview-img,
+    .asset-preview-video {
+      width: 100%;
+      height: 158px;
+      object-fit: contain;
+      display: block;
+      border-radius: 18px;
+      background: #f3fff6;
+      border: 2px solid rgba(47,158,68,.12);
+    }
+
+    .asset-preview-video {
+      object-fit: cover;
+      background: #e8f8ee;
+    }
+
+    .sfx-card {
+      grid-column: 1 / -1;
+      min-height: auto;
+    }
+
+    .sfx-buttons {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(110px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .sfx-test-button {
+      background: #fff;
+      color: var(--green-dark);
+      padding: 12px 10px;
+      border: 2px solid rgba(47,158,68,.16);
+      border-radius: 999px;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 900;
+    }
+
+    @media (max-width: 980px) {
+      .extra-media-grid { grid-template-columns: 1fr; }
+      .sfx-buttons { grid-template-columns: 1fr 1fr; }
+      .card-art { width: min(100%, 280px); height: 170px; }
+      .flip-card, .flip-inner { min-height: 420px; }
     }
 
     @media (max-width: 980px) {
@@ -1015,33 +1092,42 @@
               <strong>🎵 Background Music</strong>
               <div class="audio-controls">
                 <button class="secondary-button" id="musicToggle" type="button">Play BGM</button>
-                <button class="tiny-button copy-path" data-copy="assets/audio/bgm/eco-hero-main-bgm.mp3" type="button">Copy BGM path</button>
               </div>
               <audio id="bgmAudio" loop preload="auto">
                 <source src="assets/audio/bgm/eco-hero-main-bgm.mp3" type="audio/mpeg" />
               </audio>
-              <p class="media-note">Mounted path: <span class="hook-code">assets/audio/bgm/eco-hero-main-bgm.mp3</span></p>
-              <div class="asset-warning" id="bgmWarning">Browsers do not allow music autoplay. Click “Play BGM” after opening the page.</div>
+              <p class="path-line">Mounted path: <span class="hook-code">assets/audio/bgm/eco-hero-main-bgm.mp3</span></p>
+              <div class="bgm-tip" id="bgmWarning">Browser autoplay is blocked. Click “Play BGM” to start the music.</div>
             </div>
 
-            <div class="media-hooks" aria-label="Asset path quick copy">
-              <div class="hook-box" data-hook="image-folder">
-                <strong>Image Folder</strong>
-                <span>All generated PNG images should stay here.</span>
-                <span class="hook-code">assets/images/</span>
-                <button class="tiny-button copy-path" data-copy="assets/images/">Copy path</button>
+            <div class="extra-media-grid" aria-label="Mounted extra media and sound effects">
+              <div class="asset-preview-card">
+                <strong>🏅 Reward Badge</strong>
+                <img class="asset-preview-img" src="assets/images/reward-badge.png" alt="Eco Hero reward badge preview" />
+                <p class="path-line">assets/images/reward-badge.png</p>
               </div>
-              <div class="hook-box" data-hook="sfx-folder">
-                <strong>Sound Effects Folder</strong>
-                <span>Button, success, wrong answer, and star sounds.</span>
-                <span class="hook-code">assets/audio/sfx/</span>
-                <button class="tiny-button copy-path" data-copy="assets/audio/sfx/">Copy path</button>
+              <div class="asset-preview-card">
+                <strong>📜 Certificate Background</strong>
+                <img class="asset-preview-img" src="assets/images/certificate-bg.png" alt="Eco Hero certificate background preview" />
+                <p class="path-line">assets/images/certificate-bg.png</p>
               </div>
-              <div class="hook-box" data-hook="tutorial-video">
-                <strong>How-to-play Video</strong>
-                <span>Optional tutorial video for children.</span>
-                <span class="hook-code">assets/video/how-to-play.mp4</span>
-                <button class="tiny-button copy-path" data-copy="assets/video/how-to-play.mp4">Copy path</button>
+              <div class="asset-preview-card">
+                <strong>🎮 How-to-play Video</strong>
+                <video class="asset-preview-video" controls playsinline preload="metadata">
+                  <source src="assets/video/how-to-play.mp4" type="video/mp4" />
+                </video>
+                <p class="path-line">assets/video/how-to-play.mp4</p>
+              </div>
+              <div class="asset-preview-card sfx-card">
+                <strong>🔊 Sound Effects Test</strong>
+                <div class="sfx-buttons" aria-label="Sound effect test buttons">
+                  <button class="sfx-test-button" type="button" data-sfx-test="click">Click</button>
+                  <button class="sfx-test-button" type="button" data-sfx-test="success">Success</button>
+                  <button class="sfx-test-button" type="button" data-sfx-test="wrong">Wrong</button>
+                  <button class="sfx-test-button" type="button" data-sfx-test="star">Star</button>
+                  <button class="sfx-test-button" type="button" data-sfx-test="page">Page</button>
+                </div>
+                <p class="path-line">assets/audio/sfx/click.wav · success.wav · wrong.wav · star_collect.wav · page_pop.wav</p>
               </div>
             </div>
           </div>
@@ -1353,6 +1439,7 @@
           mascotImage.classList.remove("visible");
           if (cssMascot) cssMascot.classList.remove("hidden");
         };
+        if (mascotImage.complete && mascotImage.naturalWidth > 0) mascotImage.onload();
       }
 
       document.querySelectorAll("[data-asset-img]").forEach((img) => {
@@ -1362,6 +1449,7 @@
           if (icon) icon.classList.add("hidden");
         };
         img.onerror = () => img.classList.remove("visible");
+        if (img.complete && img.naturalWidth > 0) img.onload();
       });
 
       testImage(MEDIA_HOOKS.parkScene, (src) => {
@@ -1386,6 +1474,7 @@
           if (rewardEmoji) rewardEmoji.classList.add("hidden");
         };
         rewardImg.onerror = () => rewardImg.classList.remove("visible");
+        if (rewardImg.complete && rewardImg.naturalWidth > 0) rewardImg.onload();
       }
 
       const introVideo = document.getElementById("introVideo");
@@ -1415,6 +1504,10 @@
           }
         });
       }
+
+      document.querySelectorAll("[data-sfx-test]").forEach((button) => {
+        button.addEventListener("click", () => playSound(button.dataset.sfxTest));
+      });
 
       const mascotAsset = document.getElementById("mascotImage");
       if (mascotAsset) mascotAsset.addEventListener("click", showRandomTip);
