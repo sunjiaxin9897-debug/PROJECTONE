@@ -1023,6 +1023,131 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
     }
+
+
+    /* Home page optimized layout: one wide card, no empty right column */
+    #home .hero-grid { display: block; }
+
+    .home-card {
+      padding: clamp(22px, 3.4vw, 40px);
+    }
+
+    .home-top-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(330px, .92fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .home-copy {
+      min-width: 0;
+    }
+
+    .home-mascot-card {
+      min-height: 0;
+      padding: 24px;
+      border-radius: 28px;
+      border: 2px solid rgba(47,158,68,.14);
+      box-shadow: 0 10px 24px rgba(34,91,70,.10);
+      overflow: hidden;
+    }
+
+    #home .mascot-wrap {
+      align-content: center;
+      justify-items: center;
+      min-height: 100%;
+      gap: 14px;
+    }
+
+    #home .speech {
+      max-width: 370px;
+      min-height: auto;
+      padding: 12px 16px;
+    }
+
+    #home .hero-asset-image {
+      width: min(310px, 82%);
+      max-height: 330px;
+    }
+
+    #home .css-mascot {
+      width: min(300px, 80vw);
+    }
+
+    .home-media-grid {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(310px, .82fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .home-side-stack {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .intro-video-card,
+    .tutorial-wide-card,
+    .bgm-card,
+    .asset-preview-card {
+      background: rgba(255,255,255,.82);
+    }
+
+    .intro-video-card .intro-video {
+      max-height: 330px;
+      min-height: 250px;
+      object-fit: cover;
+    }
+
+    .bgm-card {
+      min-height: 122px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .asset-mini-grid {
+      margin-top: 0;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .asset-mini-grid .asset-preview-card {
+      min-height: 190px;
+    }
+
+    .asset-mini-grid .asset-preview-img {
+      height: 135px;
+      object-fit: contain;
+    }
+
+    .tutorial-wide-card {
+      grid-column: 1 / -1;
+    }
+
+    .tutorial-wide-card .asset-preview-video {
+      height: 320px;
+      object-fit: cover;
+    }
+
+    @media (max-width: 980px) {
+      .home-top-grid,
+      .home-media-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .home-mascot-card {
+        min-height: auto;
+      }
+
+      .tutorial-wide-card .asset-preview-video,
+      .intro-video-card .intro-video {
+        height: auto;
+        min-height: 0;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -1053,50 +1178,65 @@
 
   <main id="main">
     <section id="home" class="screen active" aria-labelledby="home-title">
-      <div class="hero-grid">
-        <article class="card">
-          <span class="eyebrow">🌎 For children aged 6-10</span>
-          <h1 id="home-title">Become a Little Eco Hero!</h1>
-          <p class="lead">Learn how to recycle, clean a park, sort rubbish into the correct bins, and collect stars through playful missions.</p>
-          <div class="progress-wrap" aria-label="Learning progress">
-            <div class="progress-bar" id="progressBar"></div>
-          </div>
-          <p><strong>Your mission:</strong> help Eco Hero protect the planet by completing four small challenges.</p>
-
-          <div class="profile-panel" aria-label="Player setup panel">
-            <h3>Make it yours</h3>
-            <div class="name-row">
-              <input id="heroName" type="text" maxlength="18" placeholder="Type your hero name, e.g. Lina" aria-label="Hero name" />
-              <button class="primary-button" id="saveName">Save Name</button>
+      <article class="card home-card">
+        <div class="home-top-grid">
+          <div class="home-copy">
+            <span class="eyebrow">🌎 For children aged 6-10</span>
+            <h1 id="home-title">Become a Little Eco Hero!</h1>
+            <p class="lead">Learn how to recycle, clean a park, sort rubbish into the correct bins, and collect stars through playful missions.</p>
+            <div class="progress-wrap" aria-label="Learning progress">
+              <div class="progress-bar" id="progressBar"></div>
             </div>
-            <div>
-              <p><strong>Choose your mission badge:</strong></p>
-              <div class="badge-picker" id="badgePicker" aria-label="Choose mission badge">
-                <button class="choice-chip selected" data-badge="♻️ Recycling Star">♻️ Recycling Star</button>
-                <button class="choice-chip" data-badge="🌳 Tree Guardian">🌳 Tree Guardian</button>
-                <button class="choice-chip" data-badge="🌊 Ocean Friend">🌊 Ocean Friend</button>
-                <button class="choice-chip" data-badge="🐢 Animal Helper">🐢 Animal Helper</button>
+            <p><strong>Your mission:</strong> help Eco Hero protect the planet by completing four small challenges.</p>
+
+            <div class="profile-panel" aria-label="Player setup panel">
+              <h3>Make it yours</h3>
+              <div class="name-row">
+                <input id="heroName" type="text" maxlength="18" placeholder="Type your hero name, e.g. Lina" aria-label="Hero name" />
+                <button class="primary-button" id="saveName">Save Name</button>
+              </div>
+              <div>
+                <p><strong>Choose your mission badge:</strong></p>
+                <div class="badge-picker" id="badgePicker" aria-label="Choose mission badge">
+                  <button class="choice-chip selected" data-badge="♻️ Recycling Star">♻️ Recycling Star</button>
+                  <button class="choice-chip" data-badge="🌳 Tree Guardian">🌳 Tree Guardian</button>
+                  <button class="choice-chip" data-badge="🌊 Ocean Friend">🌊 Ocean Friend</button>
+                  <button class="choice-chip" data-badge="🐢 Animal Helper">🐢 Animal Helper</button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div class="button-row">
-            <button class="primary-button" data-target="learn">Start Learning</button>
-            <button class="secondary-button" data-target="park">Play First Mission</button>
-          </div>
-
-          <div class="media-preview" aria-label="Mounted media preview">
-            <div class="media-card">
-              <strong>🎬 Intro Video</strong>
-              <video id="introVideo" class="intro-video" controls playsinline preload="metadata">
-                <source src="assets/video/intro.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-              <p class="media-note">Mounted path: <span class="hook-code">assets/video/intro.mp4</span></p>
-              <div class="asset-warning" id="introVideoWarning">If the video does not appear on GitHub/Gitee Pages, check the file name and letter case: intro.mp4.</div>
+            <div class="button-row">
+              <button class="primary-button" data-target="learn">Start Learning</button>
+              <button class="secondary-button" data-target="park">Play First Mission</button>
             </div>
+          </div>
 
-            <div class="media-card">
+          <aside class="mascot-stage home-mascot-card" aria-label="Eco Hero mascot illustration">
+            <div class="mascot-wrap">
+              <div class="speech" id="mascotSpeech" aria-live="polite">Hi! Tap me for a green tip. Then complete the missions to collect stars!</div>
+              <img id="mascotImage" class="hero-asset-image" src="assets/images/eco-hero.png" alt="Eco Hero mascot" />
+              <div class="mascot css-mascot" id="mascot" role="button" tabindex="0" aria-label="Eco Hero mascot. Press for a green tip.">
+                <div class="cape"></div>
+                <div class="body">♻️</div>
+              </div>
+              <button class="secondary-button" id="randomTip">Give me a tip!</button>
+            </div>
+          </aside>
+        </div>
+
+        <div class="media-preview home-media-grid" aria-label="Mounted media preview">
+          <div class="media-card intro-video-card">
+            <strong>🎬 Intro Video</strong>
+            <video id="introVideo" class="intro-video" controls playsinline preload="metadata">
+              <source src="assets/video/intro.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <div class="asset-warning" id="introVideoWarning">If the video does not appear on GitHub/Gitee Pages, check the file name and letter case: intro.mp4.</div>
+          </div>
+
+          <div class="home-side-stack">
+            <div class="media-card bgm-card">
               <strong>🎵 Background Music</strong>
               <div class="audio-controls">
                 <button class="secondary-button" id="musicToggle" type="button">Play BGM</button>
@@ -1106,7 +1246,7 @@
               </audio>
             </div>
 
-            <div class="extra-media-grid" aria-label="Mounted extra media">
+            <div class="extra-media-grid asset-mini-grid" aria-label="Mounted extra image media">
               <div class="asset-preview-card">
                 <strong>🏅 Reward Badge</strong>
                 <img class="asset-preview-img" src="assets/images/reward-badge.png" alt="Eco Hero reward badge preview" />
@@ -1115,28 +1255,17 @@
                 <strong>📜 Certificate Background</strong>
                 <img class="asset-preview-img" src="assets/images/certificate-bg.png" alt="Eco Hero certificate background preview" />
               </div>
-              <div class="asset-preview-card video-preview-card">
-                <strong>🎮 How-to-play Video</strong>
-                <video class="asset-preview-video" controls playsinline preload="metadata">
-                  <source src="assets/video/how-to-play.mp4" type="video/mp4" />
-                </video>
-              </div>
             </div>
           </div>
-        </article>
 
-        <aside class="card mascot-stage" aria-label="Eco Hero mascot illustration made with CSS and emoji">
-          <div class="mascot-wrap">
-            <div class="speech" id="mascotSpeech" aria-live="polite">Hi! Tap me for a green tip. Then complete the missions to collect stars!</div>
-            <img id="mascotImage" class="hero-asset-image" src="assets/images/eco-hero.png" alt="Eco Hero mascot" />
-            <div class="mascot css-mascot" id="mascot" role="button" tabindex="0" aria-label="Eco Hero mascot. Press for a green tip.">
-              <div class="cape"></div>
-              <div class="body">♻️</div>
-            </div>
-            <button class="secondary-button" id="randomTip">Give me a tip!</button>
+          <div class="media-card video-preview-card tutorial-wide-card">
+            <strong>🎮 How-to-play Video</strong>
+            <video class="asset-preview-video" controls playsinline preload="metadata">
+              <source src="assets/video/how-to-play.mp4" type="video/mp4" />
+            </video>
           </div>
-        </aside>
-      </div>
+        </div>
+      </article>
     </section>
 
     <section id="learn" class="screen" aria-labelledby="learn-title">
